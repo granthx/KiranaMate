@@ -158,6 +158,7 @@ app = FastAPI(
     ),
     version="1.0.0",
     lifespan=lifespan,
+    redirect_slashes=False,
 )
 
 app.add_middleware(
@@ -166,6 +167,42 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
+_db_initialized = False
+
+@app.middleware("http")
+async def vercel_request_middleware(request: Request, call_next):
+    global _db_initialized
+    if not _db_initialized:
+        try:
+            await init_db()
+            _db_initialized = True
+        except Exception as e:
+            print(f"[DB] Lazy init notice: {e}")
+
+    # Debug route
+    if "debug-path" in request.url.path or request.query_params.get("debug") == "1":
+        return JSONResponse({
+            "url": str(request.url),
+            "url_path": request.url.path,
+            "scope_path": request.scope.get("path"),
+            "scope_root_path": request.scope.get("root_path"),
+            "scope_raw_path": request.scope.get("raw_path", b"").decode("latin1", errors="ignore"),
+            "headers": dict(request.headers),
+        })
+
+    # Restore path if Vercel altered it via rewrite
+    matched = request.headers.get("x-matched-path") or request.headers.get("x-forwarded-uri")
+    if matched:
+        clean_matched = matched.split("?")[0]
+        curr = request.scope.get("path", "")
+        if curr in ("/api/index.py", "/api/index", "/api", "/") or curr.endswith(".py"):
+            request.scope["path"] = clean_matched
+
+    return await call_next(request)
 
 # ── Routers ───────────────────────────────────────────────────────────────────
 
@@ -265,6 +302,7 @@ async def download_report_pdf():
 # ── Manual Trigger Endpoints (for hackathon demo) ─────────────────────────────
 
 @app.post("/demo/trigger-monitor", tags=["Demo"])
+@app.post("/api/demo/trigger-monitor", tags=["Demo"])
 async def trigger_monitor():
     """
     Manually trigger the Sales Monitor (simulates N8N hourly cron).
@@ -286,6 +324,7 @@ async def trigger_monitor():
 
 
 @app.post("/demo/trigger-report", tags=["Demo"])
+@app.post("/api/demo/trigger-report", tags=["Demo"])
 async def trigger_weekly_report():
     """
     Manually trigger the Sunday Health Report.

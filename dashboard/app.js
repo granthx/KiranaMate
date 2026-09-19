@@ -6,6 +6,23 @@
 
 const API = (window.location && window.location.origin && window.location.origin.startsWith('http')) ? window.location.origin : 'http://127.0.0.1:8000';
 
+async function apiFetch(path, options = {}) {
+  try {
+    const res = await fetch(`${API}${path}`, options);
+    if (res.ok) return res;
+    if (res.status === 404 && !path.startsWith('/api')) {
+      const alt = await fetch(`${API}/api${path}`, options);
+      if (alt.ok) return alt;
+    }
+    return res;
+  } catch (err) {
+    if (!path.startsWith('/api')) {
+      return await fetch(`${API}/api${path}`, options);
+    }
+    throw err;
+  }
+}
+
 /* ── Trace Node Definitions for each agent ────────── */
 const AGENT_NODES = {
   campaign: {
@@ -88,7 +105,7 @@ class KiranateDashboard {
   /* ── Data ──────────────────────────────────────────── */
   async fetchDashboard() {
     try {
-      const res  = await fetch(`${API}/merchant/dashboard`);
+      const res = await apiFetch('/merchant/dashboard');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       this.updateUI(data);
@@ -197,7 +214,7 @@ class KiranateDashboard {
     this.addLog('info', `POST /campaign/text → goal: "${goal.substring(0, 60)}..."`);
 
     try {
-      const res = await fetch(`${API}/campaign/text`, {
+      const res = await apiFetch('/campaign/text', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goal })
@@ -248,7 +265,7 @@ class KiranateDashboard {
     this.addLog('info', 'POST /demo/trigger-monitor → Checking hourly sales metrics');
 
     try {
-      const res = await fetch(`${API}/demo/trigger-monitor`, { method: 'POST' });
+      const res = await apiFetch('/demo/trigger-monitor', { method: 'POST' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
 
@@ -312,7 +329,7 @@ class KiranateDashboard {
     this.addLog('info', 'POST /demo/trigger-report → Generating weekly health report');
 
     try {
-      const res = await fetch(`${API}/demo/trigger-report`, { method: 'POST' });
+      const res = await apiFetch('/demo/trigger-report', { method: 'POST' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
 
@@ -488,7 +505,7 @@ class KiranateDashboard {
 
   async pollTraceEvents() {
     try {
-      const res = await fetch(`${API}/api/trace/events?since_id=${this.lastTraceEventId}`);
+      const res = await apiFetch(`/api/trace/events?since_id=${this.lastTraceEventId}`);
       if (!res.ok) return;
       const data = await res.json();
       if (data.events && data.events.length > 0) {
