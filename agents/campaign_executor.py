@@ -18,7 +18,15 @@ try:
 except ImportError:
     AsyncRedisSaver = None
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.errors import NodeInterrupt
+try:
+    from langgraph.errors import NodeInterrupt
+except ImportError:
+    try:
+        from langgraph.types import NodeInterrupt
+    except ImportError:
+        class NodeInterrupt(Exception):
+            """Fallback NodeInterrupt when not available in installed langgraph"""
+            pass
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
