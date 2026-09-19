@@ -47,3 +47,8 @@ htmlcov/
 # Temporary files
 *.tmp
 *.temp
+
+
+*.DESIGN.md
+*.SETUP_GUIDE.md
+*.PRESENTATION_GUIDE.md
