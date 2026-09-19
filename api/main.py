@@ -72,38 +72,59 @@ async def sunday_report_job():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    await init_db()
-    print("✅ Database initialized")
+    try:
+        await init_db()
+        print("✅ Database initialized")
+    except Exception as e:
+        print(f"⚠️ Database initialization notice: {e}")
 
-    # Start tunnel for WhatsApp webhooks
-    from core.tunnel_manager import start_tunnel
-    tunnel_url = start_tunnel(port=int(os.getenv("PORT", 8000)))
-    if tunnel_url:
-        app.state.tunnel_url = tunnel_url
+    is_serverless = bool(os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"))
+    if not is_serverless:
+        # Start tunnel for WhatsApp webhooks in local dev
+        try:
+            from core.tunnel_manager import start_tunnel
+            tunnel_url = start_tunnel(port=int(os.getenv("PORT", 8000)))
+            if tunnel_url:
+                app.state.tunnel_url = tunnel_url
+            else:
+                app.state.tunnel_url = None
+                print("⚠️  No tunnel started. WhatsApp webhooks may not work.")
+        except Exception as e:
+            print(f"⚠️ Tunnel manager notice: {e}")
+
+        # Schedule background jobs in local dev
+        try:
+            scheduler.add_job(hourly_monitor_job, "interval", hours=1, id="hourly_monitor")
+            scheduler.add_job(
+                sunday_report_job,
+                "cron",
+                day_of_week="sun",
+                hour=13,    # 13:00 UTC = 18:30 IST ≈ 7 PM IST
+                minute=30,
+                id="weekly_report",
+            )
+            scheduler.start()
+            print("✅ Scheduler started (hourly monitor + Sunday report)")
+        except Exception as e:
+            print(f"⚠️ Scheduler notice: {e}")
     else:
-        app.state.tunnel_url = None
-        print("⚠️  No tunnel started. WhatsApp webhooks may not work.")
-
-    # Schedule jobs
-    scheduler.add_job(hourly_monitor_job, "interval", hours=1, id="hourly_monitor")
-    scheduler.add_job(
-        sunday_report_job,
-        "cron",
-        day_of_week="sun",
-        hour=13,    # 13:00 UTC = 18:30 IST ≈ 7 PM IST
-        minute=30,
-        id="weekly_report",
-    )
-    scheduler.start()
-    print("✅ Scheduler started (hourly monitor + Sunday report)")
+        vercel_url = os.getenv("VERCEL_URL")
+        app.state.tunnel_url = f"https://{vercel_url}" if vercel_url else None
 
     yield
 
     # Shutdown
-    from core.tunnel_manager import stop_tunnel
-    stop_tunnel()
-    scheduler.shutdown()
-    print("Scheduler stopped")
+    if not is_serverless:
+        try:
+            from core.tunnel_manager import stop_tunnel
+            stop_tunnel()
+        except Exception:
+            pass
+        try:
+            scheduler.shutdown()
+        except Exception:
+            pass
+        print("Scheduler stopped")
 
 
 # ── App ───────────────────────────────────────────────────────────────────────
@@ -139,23 +160,37 @@ app.include_router(trace_router,     prefix="/trace",     tags=["Trace"])
 
 # ── Serve Hackathon Demo Dashboard & Reports ───────────────────────────────────
 import os as _os
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 
 _dashboard_dir = _os.path.join(_os.path.dirname(_os.path.dirname(__file__)), "dashboard")
 if _os.path.isdir(_dashboard_dir):
     app.mount("/dashboard", StaticFiles(directory=_dashboard_dir, html=True), name="dashboard")
     print(f"Dashboard mounted at /dashboard ({_dashboard_dir})")
 
-_reports_dir = _os.path.join(_os.path.dirname(_os.path.dirname(__file__)), "reports")
-_os.makedirs(_reports_dir, exist_ok=True)
-app.mount("/reports", StaticFiles(directory=_reports_dir), name="reports")
-print(f"Reports mounted at /reports ({_reports_dir})")
+is_serverless_runtime = bool(_os.getenv("VERCEL") or _os.getenv("AWS_LAMBDA_FUNCTION_NAME"))
+if is_serverless_runtime:
+    _reports_dir = "/tmp/reports"
+else:
+    _reports_dir = _os.path.join(_os.path.dirname(_os.path.dirname(__file__)), "reports")
+
+try:
+    _os.makedirs(_reports_dir, exist_ok=True)
+    app.mount("/reports", StaticFiles(directory=_reports_dir), name="reports")
+    print(f"Reports mounted at /reports ({_reports_dir})")
+except Exception as e:
+    print(f"⚠️ Reports directory notice: {e}")
 
 
 # ── Root ──────────────────────────────────────────────────────────────────────
 
 @app.get("/", tags=["Root"])
 async def root():
+    """Redirect root visitors directly to the KiranaMate Dashboard UI"""
+    return RedirectResponse(url="/dashboard/")
+
+
+@app.get("/status", tags=["Root"])
+async def status_info():
     return {
         "product":    "KiranaMate — MerchantMind AI",
         "version":    "1.0.0",

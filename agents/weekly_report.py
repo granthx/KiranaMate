@@ -392,9 +392,12 @@ async def _generate_pdf(report_text: str, state: ReportState) -> Optional[str]:
 
         doc.build(story)
 
-        # Save to project's reports directory for web viewing and downloads
-        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        reports_dir  = os.path.join(project_root, "reports")
+        # Save to reports directory for web viewing and downloads
+        if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
+            reports_dir = "/tmp/reports"
+        else:
+            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            reports_dir  = os.path.join(project_root, "reports")
         os.makedirs(reports_dir, exist_ok=True)
 
         filename     = f"health_report_{state['merchant_id']}.pdf"

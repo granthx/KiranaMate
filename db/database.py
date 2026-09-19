@@ -10,7 +10,12 @@ from dotenv import load_dotenv
 load_dotenv()
 from pathlib import Path
 
-DEFAULT_SQLITE_PATH = Path(__file__).resolve().parent.parent / "kiranamate.db"
+is_serverless = bool(os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"))
+if is_serverless:
+    DEFAULT_SQLITE_PATH = Path("/tmp/kiranamate.db")
+else:
+    DEFAULT_SQLITE_PATH = Path(__file__).resolve().parent.parent / "kiranamate.db"
+
 DEFAULT_DB_URL = f"sqlite+aiosqlite:///{DEFAULT_SQLITE_PATH.as_posix()}"
 
 DATABASE_URL = os.getenv("DATABASE_URL") or DEFAULT_DB_URL
@@ -38,9 +43,22 @@ AsyncSessionLocal = async_sessionmaker(
 
 
 async def init_db():
-    """Create all tables on startup"""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    """Create all tables on startup and seed if empty"""
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+
+        # Auto-seed demo data if database was just created
+        from db.models import Merchant
+        from sqlalchemy import select
+        async with AsyncSessionLocal() as session:
+            result = await session.execute(select(Merchant))
+            if not result.scalars().first():
+                from db.seed import seed
+                await seed()
+                print("✅ Auto-seeded database for demo")
+    except Exception as e:
+        print(f"⚠️ Database initialization error: {e}")
 
 
 async def get_db():
