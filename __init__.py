@@ -1,0 +1,1 @@
+# KiranaMate — MerchantMind AI

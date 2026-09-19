@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KiranaMate — Autonomous Business Teammate for Paytm Merchants</title>
+    <meta name="description" content="KiranaMate: MerchantMind AI — Autonomous LangGraph agent swarm orchestrating inventory, WhatsApp marketing, and khata recovery for Indian Kirana stores.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=airbnb-human-v1">
+</head>
+<body>
+
+    <!-- ── Airbnb Inspired Top Navigation ──────────────────────────── -->
+    <header class="app-nav">
+        <div class="nav-container">
+            <!-- Left: Brand + Store Identity -->
+            <div class="nav-left">
+                <a href="/dashboard/" class="brand-link" title="KiranaMate MerchantMind AI">
+                    <div class="brand-logo-mark">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-title">KiranaMate</span>
+                        <span class="brand-sub">MerchantMind AI</span>
+                    </div>
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <div class="store-selector-pill">
+                    <span class="store-dot"></span>
+                    <div class="store-info">
+                        <span class="store-name">Sharma Kirana Store</span>
+                        <span class="store-meta">Connaught Place, New Delhi &bull; MID #8841</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Product Tabs (Airbnb 3-Product Navigation Pattern) -->
+            <nav class="nav-center-tabs" id="nav-center-tabs">
+                <a href="#overview" class="nav-tab active" data-target="overview">
+                    <span class="tab-label">Store Telemetry</span>
+                </a>
+                <a href="#agents" class="nav-tab" data-target="agents">
+                    <span class="tab-label">Agent Swarm</span>
+                    <span class="tab-badge">ACTIVE</span>
+                </a>
+                <a href="#ledger" class="nav-tab" data-target="ledger">
+                    <span class="tab-label">Khata &amp; Reports</span>
+                </a>
+            </nav>
+
+            <!-- Right: System Status & API Utilities -->
+            <div class="nav-right">
+                <div class="api-status" id="api-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Connecting...</span>
+                </div>
+                <button class="nav-icon-btn" id="refresh-btn" title="Refresh Live Data" aria-label="Refresh Data">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                </button>
+                <a href="/docs" target="_blank" class="nav-pill-button">
+                    <span>API Docs</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Signature Airbnb Pill Command Bar ───────────────────────── -->
+    <section class="command-section">
+        <div class="command-pill-bar">
+            <div class="command-segment flex-grow">
+                <label for="campaign-goal-input" class="segment-label">Store Goal</label>
+                <input type="text" class="campaign-input" id="campaign-goal-input"
+                       placeholder="e.g. Clear dairy items expiring in 3 days"
+                       value="Clear dairy items expiring in 3 days" />
+            </div>
+            <div class="segment-divider"></div>
+            <div class="command-segment">
+                <span class="segment-label">Orchestrator</span>
+                <span class="segment-value">LangGraph Swarm</span>
+            </div>
+            <div class="segment-divider"></div>
+            <div class="command-segment">
+                <span class="segment-label">Channel</span>
+                <span class="segment-value">WhatsApp Cloud API</span>
+            </div>
+            <button class="command-orb" id="btn-campaign" title="Execute Autonomous Campaign">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span class="orb-text">Execute Campaign</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- ── Main Workspace Grid ─────────────────────────────────────── -->
+    <main class="dashboard-layout">
+
+        <!-- LEFT COLUMN: Live WhatsApp Business Stream (390px) -->
+        <aside class="stream-column">
+            <div class="column-header">
+                <div class="header-titles">
+                    <span class="kicker">Real-time Stream</span>
+                    <h2 class="column-heading">WhatsApp Activity Feed</h2>
+                </div>
+                <div class="live-indicator-pill">
+                    <span class="pulse-dot"></span> Live Channel
+                </div>
+            </div>
+
+            <div class="feed-card">
+                <!-- WhatsApp Top Header -->
+                <div class="wa-header">
+                    <div class="wa-header-left">
+                        <div class="wa-avatar-box">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="wa-header-text">
+                            <span class="wa-title">KiranaMate Assistant</span>
+                            <span class="wa-status" id="wa-agent-status">Online</span>
+                        </div>
+                    </div>
+                    <span class="wa-badge">Verified Business</span>
+                </div>
+
+                <!-- WhatsApp Messages Body -->
+                <div class="wa-chat-canvas" id="wa-messages">
+                    <div class="wa-bubble-date">Today</div>
+                    <div class="wa-bubble received">
+                        <div class="wa-bubble-content">
+                            Namaste Ramesh ji. I am KiranaMate, your store's autonomous business teammate.<br><br>
+                            I continuously monitor real-time sales anomalies, calculate clearance discounts on expiring inventory, and dispatch personalized Khata recovery notices via WhatsApp.
+                        </div>
+                        <div class="wa-meta-time" id="wa-intro-time">10:45 AM</div>
+                    </div>
+                </div>
+
+                <!-- Feed Status Bar (Authentic Telemetry, No fake inputs) -->
+                <div class="wa-footer-bar">
+                    <span class="wa-stream-dot"></span>
+                    <span class="wa-footer-text">Listening for merchant approvals &amp; customer replies</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- RIGHT MAIN AREA: Telemetry + Swarm Pipeline + Actions -->
+        <div class="main-column">
+
+            <!-- Card 1: Store Telemetry & Real-Time Retail Analytics (Hero Section) -->
+            <section class="card card-telemetry" id="overview">
+                <div class="card-top-bar">
+                    <div class="top-bar-left">
+                        <span class="section-tag">Store Telemetry</span>
+                        <h3 class="card-heading">Real-time Retail Analytics</h3>
+                    </div>
+                    <div class="freshness-indicator">
+                        <span class="freshness-dot"></span>
+                        <span id="data-freshness">Syncing live data</span>
+                    </div>
+                </div>
+
+                <!-- 4 KPI Metrics -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <span class="kpi-label">Today's Revenue</span>
+                        <div class="kpi-value" id="today-revenue">₹—</div>
+                        <div class="kpi-delta" id="revenue-delta">— vs yesterday</div>
+                    </div>
+                    <div class="kpi-card">
+                        <span class="kpi-label">Transactions</span>
+                        <div class="kpi-value" id="txn-count">—</div>
+                        <div class="kpi-sub">Paytm Soundbox + QR</div>
+                    </div>
+                    <div class="kpi-card">
+                        <span class="kpi-label">Average Order</span>
+                        <div class="kpi-value" id="avg-order">₹—</div>
+                        <div class="kpi-sub">Basket size</div>
+                    </div>
+                    <div class="kpi-card highlight-khata">
+                        <span class="kpi-label">Khata Preserved</span>
+                        <div class="kpi-value primary" id="khata-amount">₹—</div>
+                        <div class="kpi-sub" id="khata-count-label"><span id="khata-count">—</span> accounts pending</div>
+                    </div>
+                </div>
+
+                <!-- Anomaly Alert Banner (Conditional) -->
+                <div class="anomaly-banner" id="anomaly-alert" style="display: none;">
+                    <div class="anomaly-pill" id="anomaly-severity">CRITICAL</div>
+                    <div class="anomaly-info">
+                        <div class="anomaly-title">Sales Anomaly Flagged</div>
+                        <div class="anomaly-desc" id="anomaly-desc">Category sales dropped significantly against 4-week baseline.</div>
+                    </div>
+                </div>
+
+                <!-- Category Breakdown Bars -->
+                <div class="category-breakdown-group">
+                    <span class="group-title">Category Revenue Contribution</span>
+                    <div class="category-bars-list" id="category-bars">
+                        <div class="cat-placeholder">Loading live store telemetry...</div>
+                    </div>
+                </div>
+
+                <!-- Hidden span for JS compatibility -->
+                <span id="campaign-count" style="display:none;">0</span>
+            </section>
+
+            <!-- Card 2: LangGraph Autonomous Multi-Step Pipeline -->
+            <section class="card card-pipeline" id="agents">
+                <div class="card-top-bar">
+                    <div class="top-bar-left">
+                        <span class="section-tag">Autonomous Operations Engine</span>
+                        <h3 class="card-heading">LangGraph Multi-Step Pipeline</h3>
+                    </div>
+                    <div class="top-bar-right">
+                        <div class="timer-pill">
+                            <span class="timer-kicker">RUN TIME</span>
+                            <span class="timer-digits" id="trace-timer">00:00</span>
+                        </div>
+                        <span class="trace-badge" id="trace-badge">Standby</span>
+                    </div>
+                </div>
+
+                <!-- Node Visualizer Strip -->
+                <div class="pipeline-track-container">
+                    <div class="trace-nodes-container" id="trace-nodes">
+                        <div class="trace-idle-msg">
+                            Enter a store goal above or trigger an action below to observe autonomous swarm execution.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trace Log Terminal (Clean Developer Stream) -->
+                <div class="stream-terminal">
+                    <div class="terminal-header">
+                        <span class="terminal-badge">STREAM</span>
+                        <span class="terminal-title">Execution Log &bull; Trace Bus Event Stream</span>
+                    </div>
+                    <div class="trace-log-content" id="trace-log">
+                        <div class="trace-log-line muted">
+                            <span class="log-ts">—:—:—</span>
+                            <span>Awaiting agent trigger from command bar or action panel...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Card 3: Session Impact ROI & Live Actions -->
+            <div class="data-split-grid" id="ledger">
+                <!-- Left Split: Impact ROI -->
+                <section class="card card-actions-roi">
+                    <div class="roi-section">
+                        <div class="card-top-bar mini">
+                            <div class="top-bar-left">
+                                <span class="section-tag">Autonomous ROI</span>
+                                <h3 class="card-heading">Session Impact</h3>
+                            </div>
+                            <button class="reset-link" id="impact-reset-btn" title="Reset Session Metrics">Reset</button>
+                        </div>
+                        <div class="roi-grid">
+                            <div class="roi-box">
+                                <span class="roi-label">Recovered</span>
+                                <span class="roi-number primary" id="impact-recovered">₹0</span>
+                                <span class="roi-desc">Cashflow preserved</span>
+                            </div>
+                            <div class="roi-box">
+                                <span class="roi-label">Customers</span>
+                                <span class="roi-number" id="impact-customers">0</span>
+                                <span class="roi-desc">Targeted broadcasts</span>
+                            </div>
+                            <div class="roi-box">
+                                <span class="roi-label">Anomalies</span>
+                                <span class="roi-number" id="impact-units">0</span>
+                                <span class="roi-desc">Deviations detected</span>
+                            </div>
+                            <div class="roi-box">
+                                <span class="roi-label">Reports</span>
+                                <span class="roi-number" id="impact-time">0</span>
+                                <span class="roi-desc">PDF audits compiled</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-rule"></div>
+
+                    <!-- Khata & Campaign Snapshot -->
+                    <div class="ledger-row">
+                        <div class="ledger-item">
+                            <span class="ledger-label">Paytm Soundbox</span>
+                            <span class="ledger-val live-chip">Active (4.0)</span>
+                        </div>
+                        <div class="ledger-item highlight">
+                            <span class="ledger-label">Customer Khata</span>
+                            <span class="ledger-val">3 Overdue</span>
+                        </div>
+                        <div class="ledger-item">
+                            <span class="ledger-label">Channel Status</span>
+                            <span class="ledger-val">WhatsApp Verified</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Split: Live Actions Launchpad -->
+                <section class="card card-actions-roi">
+                    <!-- Live Actions -->
+                    <div class="actions-section">
+                        <div class="card-top-bar mini">
+                            <div class="top-bar-left">
+                                <span class="section-tag">Human-in-the-Loop</span>
+                                <h3 class="card-heading">Live Agent Actions</h3>
+                            </div>
+                        </div>
+
+                        <div class="actions-stack">
+                            <!-- Action 1: Monitor Trigger -->
+                            <button class="action-card-btn monitor-btn" id="btn-monitor" type="button">
+                                <div class="action-icon-circle">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                                    </svg>
+                                </div>
+                                <div class="action-body">
+                                    <div class="action-title-row">
+                                        <span class="action-name">Run Sales Monitor</span>
+                                        <span class="tag-chip tag-red">Hourly Cron</span>
+                                    </div>
+                                    <p class="action-desc">Ingests sales, benchmarks against 4-week rolling baseline, and drafts Khata recovery notices.</p>
+                                </div>
+                            </button>
+
+                            <!-- Action 2: Health Report Trigger -->
+                            <button class="action-card-btn report-btn" id="btn-report" type="button">
+                                <div class="action-icon-circle">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                        <polyline points="14 2 14 8 20 8"></polyline>
+                                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                                        <polyline points="10 9 9 9 8 9"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="action-body">
+                                    <div class="action-title-row">
+                                        <span class="action-name">Generate Health Report</span>
+                                        <span class="tag-chip tag-purple">Weekly Audit</span>
+                                    </div>
+                                    <p class="action-desc">Calculates 0–100 store score, compiles market intelligence, builds formal PDF, and delivers via WhatsApp.</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="section-rule"></div>
+
+                    <!-- Autonomous Stack Status -->
+                    <div class="stack-section">
+                        <div class="card-top-bar mini">
+                            <div class="top-bar-left">
+                                <span class="section-tag">Architecture</span>
+                                <h3 class="card-heading">Agentic Ecosystem</h3>
+                            </div>
+                        </div>
+
+                        <div class="services-list">
+                            <div class="service-item">
+                                <span class="service-dot green"></span>
+                                <span class="service-name">LangGraph State Machine</span>
+                                <span class="service-status green">Autonomous</span>
+                            </div>
+                            <div class="service-item">
+                                <span class="service-dot" id="ind-db"></span>
+                                <span class="service-name">Database (SQLite / PostgreSQL)</span>
+                                <span class="service-status" id="chip-db">Verifying</span>
+                            </div>
+                            <div class="service-item">
+                                <span class="service-dot green"></span>
+                                <span class="service-name">Gemini 3.6 Flash (Brain)</span>
+                                <span class="service-status green">Active</span>
+                            </div>
+                            <div class="service-item">
+                                <span class="service-dot" id="ind-wa"></span>
+                                <span class="service-name">Meta WhatsApp Business API</span>
+                                <span class="service-status" id="chip-wa">Verifying</span>
+                            </div>
+                            <div class="service-item">
+                                <span class="service-dot" id="ind-api"></span>
+                                <span class="service-name">FastAPI Backend</span>
+                                <span class="service-status" id="chip-api">Verifying</span>
+                            </div>
+                            <div class="service-item">
+                                <span class="service-dot green"></span>
+                                <span class="service-name">APScheduler (Background Cron)</span>
+                                <span class="service-status green">Active</span>
+                            </div>
+                        </div>
+
+                        <div class="stack-tags-strip">
+                            <span class="tech-badge">LangGraph</span>
+                            <span class="tech-badge">Google Gemini</span>
+                            <span class="tech-badge">Meta API</span>
+                            <span class="tech-badge">Cognee</span>
+                            <span class="tech-badge">Serper AI</span>
+                            <span class="tech-badge">Paytm</span>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- App Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

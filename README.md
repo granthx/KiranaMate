@@ -1,4 +1,4 @@
-KiranaMate — MerchantMind AI
+# KiranaMate — MerchantMind AI
 ### *The Autonomous Business Teammate for 12+ Million Indian Kirana Stores*
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
@@ -9,6 +9,48 @@ KiranaMate — MerchantMind AI
 [![Cognee](https://img.shields.io/badge/Cognee-Knowledge_Graph_Memory-4CAF50?style=for-the-badge)](https://cognee.ai)
 [![Paytm](https://img.shields.io/badge/Paytm-Soundbox_&_UPI_Webhooks-002E6E?style=for-the-badge&logo=paytm&logoColor=white)](https://paytm.com)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+---
+
+> **"Like a GPS for your business — always watching, always guiding, never needing to be asked."**  
+> *Zero-app adoption friction, vernacular voice-first interaction, proactive multi-agent intelligence, and 100% margin-guaranteed execution.*
+
+---
+
+## 🗂️ Project Structure
+
+```
+kiranamate/
+├── agents/                     # LangGraph StateGraph Autonomous Agents
+│   ├── sales_monitor.py        # Hourly Sales Deviation & Trend Tracker
+│   ├── campaign_executor.py    # 6-Step Autonomous Campaign Swarm
+│   └── weekly_report.py        # ReportLab PDF Generation & WhatsApp Delivery
+├── api/                        # FastAPI Webhook & Dashboard Endpoints
+│   ├── main.py                 # Application router, CORS & SSE bus
+│   ├── routes_merchant.py      # /merchant telemetry & metrics endpoints
+│   ├── routes_campaign.py      # /campaign/text & approval endpoints
+│   ├── routes_webhook.py       # WhatsApp Cloud API & Paytm webhooks
+│   └── routes_health.py        # Health & system diagnostics
+├── core/                       # Integrations & Core Infrastructure
+│   ├── cognee_client.py        # Knowledge graph memory store
+│   ├── serper_client.py        # Serper AI live competitor price scraping
+│   ├── whatsapp_client.py      # Meta WhatsApp Cloud API client
+│   ├── paytm_client.py         # Paytm Business & Soundbox event parser
+│   ├── sarvam_client.py        # Sarvam AI vernacular speech-to-text
+│   ├── trace_bus.py            # Real-time SSE trace event bus
+│   └── tunnel_manager.py       # Localtunnel / ngrok webhook tunnel
+├── dashboard/                  # Human-Crafted Airbnb Design System Frontend
+│   ├── index.html              # Clean, semantic merchant interface
+│   ├── style.css               # Airbnb Cereal tokens, pure white canvas
+│   └── app.js                  # SSE stream listener & real-time telemetry
+├── db/                         # Persistence Layer
+│   ├── database.py             # SQLAlchemy async engine & session
+│   ├── models.py               # Merchant, Transaction, Campaign & Khata models
+│   └── seed.py                 # Realistic Kirana store demo seed script
+└── utils/                      # Deterministic Mathematical Engines
+    ├── anomaly_detector.py     # 4-week rolling baseline statistical engine
+    └── discount_calculator.py  # Cost floor & margin-safe discount calculus
+```
 
 ---
 
@@ -614,10 +656,42 @@ kiranamate/
 ├── requirements.txt                # Pinned production Python dependencies
 ├── Dockerfile                      # Production container image configuration
 └── docker-compose.yml              # App + PostgreSQL + Redis full stack definition
+>>>>>>> origin/main
 ```
 
 ---
 
+<<<<<<< HEAD
+## Quick Start
+
+### 1. Clone & Setup Environment
+
+```bash
+git clone <repo>
+cd kiranamate
+cp .env.example .env
+# Fill in your API keys in .env
+```
+
+### 2. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Start with Docker (Recommended)
+
+```bash
+docker-compose up --build
+```
+
+This starts:
+- **FastAPI backend** on `http://localhost:8000`
+- **PostgreSQL** on port 5432
+- **Redis** on port 6379 (for LangGraph state persistence)
+
+### 4. Seed Demo Data
+=======
 ## 11. Installation & Deployment Guide
 
 ### Prerequisites
@@ -677,10 +751,78 @@ pip install -r requirements.txt
 ```
 
 ### Step 3: Seed Realistic Demo Data
+>>>>>>> origin/main
 
 ```bash
 python db/seed.py
 ```
+<<<<<<< HEAD
+
+### 5. Run the API
+
+```bash
+uvicorn api.main:app --reload --port 8000
+```
+
+### 6. API Docs
+
+Visit `http://localhost:8000/docs` for the full Swagger UI.
+
+---
+
+## Environment Variables (`.env`)
+
+```env
+# LLM
+GEMINI_API_KEY=your_gemini_key          # Primary LLM (JSON & Reasoning)
+OPENAI_API_KEY=your_openai_key          # Fallback + Whisper + DALL-E
+
+# Voice
+SARVAM_API_KEY=your_sarvam_key          # Vernacular voice transcription
+
+# Memory
+COGNEE_API_KEY=your_cognee_key          # Knowledge graph
+
+# Web Intelligence
+SERPER_API_KEY=your_serper_key          # Competitor pricing scrape
+
+# Messaging
+WHATSAPP_TOKEN=your_meta_token          # Meta WhatsApp Business API
+WHATSAPP_PHONE_ID=your_phone_id
+
+# Payments
+PAYTM_MERCHANT_KEY=your_paytm_key
+PAYTM_MERCHANT_ID=your_merchant_id
+
+# Database
+DATABASE_URL=postgresql://user:pass@localhost:5432/kiranamate
+
+# Redis (LangGraph state)
+REDIS_URL=redis://localhost:6379
+
+# Image Generation
+STABILITY_API_KEY=your_stability_key   # Stable Diffusion 3.5
+```
+
+---
+
+## Three Demo Scenarios
+
+| Scenario | Trigger | What Happens |
+|---|---|---|
+| **Voice Clearance** | POST /campaign/voice | 5s voice → full WhatsApp campaign in 90s |
+| **Anomaly Alert** | Cron / POST /monitor/check | 41% dairy drop → auto WhatsApp alert + khata recovery |
+| **Sunday Report** | Cron (Sun 7PM) / POST /report/generate | 0-100 health score PDF via WhatsApp |
+
+---
+
+## N8N Setup
+
+1. Open N8N (`http://localhost:5678` if using docker-compose)
+2. Import `n8n_workflows/workflows.json`
+3. Set credentials for WhatsApp, Paytm, and the FastAPI webhook URL
+4. Activate all 3 workflows
+=======
 *Populates the database with 50+ realistic Kirana products (Amul Milk, Britannia Bread, Aashirvaad Atta, Maggi Noodles), 14 days of simulated Paytm transactions, customer profiles, and open khata debt.*
 
 ### Step 4: Run the Backend Service

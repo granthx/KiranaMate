@@ -1,0 +1,199 @@
+{
+  "name": "KiranaMate — MerchantMind AI Workflows",
+  "nodes": [
+    {
+      "id": "hourly-cron",
+      "name": "Hourly Sales Monitor",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "hours", "hoursInterval": 1 }]
+        }
+      },
+      "position": [100, 200]
+    },
+    {
+      "id": "trigger-monitor",
+      "name": "Trigger Sales Monitor Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "http://app:8000/demo/trigger-monitor",
+        "options": {}
+      },
+      "position": [320, 200]
+    },
+    {
+      "id": "check-anomalies",
+      "name": "Check If Anomaly Found",
+      "type": "n8n-nodes-base.if",
+      "parameters": {
+        "conditions": {
+          "number": [{
+            "value1": "={{ $json.anomalies.length }}",
+            "operation": "larger",
+            "value2": 0
+          }]
+        }
+      },
+      "position": [540, 200]
+    },
+    {
+      "id": "log-anomaly",
+      "name": "Log Anomaly to Console",
+      "type": "n8n-nodes-base.set",
+      "parameters": {
+        "values": {
+          "string": [{"name": "logged", "value": "={{ $json.anomalies[0].description }}"}]
+        }
+      },
+      "position": [760, 120]
+    },
+    {
+      "id": "log-normal",
+      "name": "Log Normal State",
+      "type": "n8n-nodes-base.set",
+      "parameters": {
+        "values": {
+          "string": [{"name": "status", "value": "All categories normal"}]
+        }
+      },
+      "position": [760, 300]
+    },
+    {
+      "id": "sunday-cron",
+      "name": "Sunday 7 PM Report",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "parameters": {
+        "rule": {
+          "interval": [{
+            "field": "cronExpression",
+            "expression": "30 13 * * 0"
+          }]
+        }
+      },
+      "position": [100, 450]
+    },
+    {
+      "id": "trigger-report",
+      "name": "Trigger Weekly Health Report",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "http://app:8000/demo/trigger-report",
+        "options": {}
+      },
+      "position": [320, 450]
+    },
+    {
+      "id": "paytm-sync",
+      "name": "Paytm Transaction Sync",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "minutes", "minutesInterval": 5 }]
+        }
+      },
+      "position": [100, 650]
+    },
+    {
+      "id": "fetch-paytm-txns",
+      "name": "Fetch Paytm Transactions",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "GET",
+        "url": "http://app:8000/merchant/transactions",
+        "options": {}
+      },
+      "position": [320, 650]
+    },
+    {
+      "id": "whatsapp-webhook-trigger",
+      "name": "WhatsApp Incoming Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "path": "whatsapp-incoming",
+        "httpMethod": "POST",
+        "responseMode": "lastNode"
+      },
+      "position": [100, 850]
+    },
+    {
+      "id": "route-message",
+      "name": "Route WhatsApp Message",
+      "type": "n8n-nodes-base.switch",
+      "parameters": {
+        "dataPropertyName": "body.type",
+        "rules": {
+          "rules": [
+            {"value": "audio",       "output": 0},
+            {"value": "interactive", "output": 1},
+            {"value": "text",        "output": 2}
+          ]
+        }
+      },
+      "position": [320, 850]
+    },
+    {
+      "id": "handle-voice",
+      "name": "Forward Voice to /webhook/whatsapp",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "http://app:8000/webhook/whatsapp",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={{ $json.body }}"
+      },
+      "position": [540, 770]
+    },
+    {
+      "id": "handle-button",
+      "name": "Forward Button Reply to /webhook/whatsapp",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "http://app:8000/webhook/whatsapp",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={{ $json.body }}"
+      },
+      "position": [540, 870]
+    },
+    {
+      "id": "handle-text",
+      "name": "Forward Text to /webhook/whatsapp",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "http://app:8000/webhook/whatsapp",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={{ $json.body }}"
+      },
+      "position": [540, 970]
+    }
+  ],
+  "connections": {
+    "Hourly Sales Monitor":           { "main": [[{"node": "Trigger Sales Monitor Agent", "type": "main", "index": 0}]] },
+    "Trigger Sales Monitor Agent":    { "main": [[{"node": "Check If Anomaly Found",      "type": "main", "index": 0}]] },
+    "Check If Anomaly Found":         { "main": [[{"node": "Log Anomaly to Console", "type":"main","index":0}],[{"node":"Log Normal State","type":"main","index":0}]] },
+    "Sunday 7 PM Report":             { "main": [[{"node": "Trigger Weekly Health Report", "type": "main", "index": 0}]] },
+    "Paytm Transaction Sync":         { "main": [[{"node": "Fetch Paytm Transactions",     "type": "main", "index": 0}]] },
+    "WhatsApp Incoming Webhook":      { "main": [[{"node": "Route WhatsApp Message",        "type": "main", "index": 0}]] },
+    "Route WhatsApp Message":         { "main": [
+      [{"node": "Forward Voice to /webhook/whatsapp",        "type":"main","index":0}],
+      [{"node": "Forward Button Reply to /webhook/whatsapp", "type":"main","index":0}],
+      [{"node": "Forward Text to /webhook/whatsapp",         "type":"main","index":0}]
+    ]}
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "meta": {
+    "instanceId": "kiranamate-n8n",
+    "notes": "Import this file into N8N. Set WEBHOOK_URL to http://app:8000 in docker-compose.yml."
+  }
+}
