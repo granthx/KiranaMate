@@ -19,6 +19,24 @@ if hasattr(sys.stderr, "reconfigure"):
     except Exception:
         pass
 
+# Fix Python 3.12.4+ compatibility with older pydantic v1 / langsmith
+import typing
+try:
+    _orig_eval = typing.ForwardRef._evaluate
+    def _patched_eval(self, globalns, localns, type_params=None, *, recursive_guard=None):
+        if recursive_guard is None:
+            recursive_guard = frozenset()
+        try:
+            return _orig_eval(self, globalns, localns, type_params=type_params, recursive_guard=recursive_guard)
+        except TypeError:
+            try:
+                return _orig_eval(self, globalns, localns, type_params=type_params)
+            except TypeError:
+                return _orig_eval(self, globalns, localns)
+    typing.ForwardRef._evaluate = _patched_eval
+except Exception:
+    pass
+
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
