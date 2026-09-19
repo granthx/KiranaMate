@@ -645,16 +645,38 @@ class KiranateDashboard {
 
   /* ── Timer ─────────────────────────────────────────── */
   startTimer() {
-    this.timerSec = 0;
+    if (this.timerRef) clearInterval(this.timerRef);
+    this.startTime = Date.now();
     const el = document.getElementById('trace-timer');
+    if (el) el.textContent = '0.0s';
     this.timerRef = setInterval(() => {
-      this.timerSec++;
-      const m = String(Math.floor(this.timerSec / 60)).padStart(2, '0');
-      const s = String(this.timerSec % 60).padStart(2, '0');
-      el.textContent = `${m}:${s}`;
-    }, 1000);
+      if (!this.startTime) return;
+      const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(1);
+      if (el) el.textContent = `${elapsed}s`;
+    }, 100);
   }
-  stopTimer() { clearInterval(this.timerRef); }
+
+  stopTimer() {
+    if (this.timerRef) {
+      clearInterval(this.timerRef);
+      this.timerRef = null;
+    }
+    const el = document.getElementById('trace-timer');
+    if (this.startTime && el) {
+      const elapsed = ((Date.now() - this.startTime) / 1000).toFixed(1);
+      el.textContent = `${elapsed}s`;
+    }
+  }
+
+  resetTimer() {
+    if (this.timerRef) {
+      clearInterval(this.timerRef);
+      this.timerRef = null;
+    }
+    this.startTime = null;
+    const el = document.getElementById('trace-timer');
+    if (el) el.textContent = '0.0s';
+  }
 
   /* ── WhatsApp Activity Feed ────────────────────────── */
 
@@ -715,6 +737,7 @@ class KiranateDashboard {
     document.getElementById('impact-customers').textContent = '0';
     document.getElementById('impact-units'    ).textContent = '0';
     document.getElementById('impact-time'     ).textContent = '0';
+    this.resetTimer();
   }
 
   animateCounter(id, from, to, fmt) {
