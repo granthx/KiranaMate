@@ -26,7 +26,38 @@ except Exception:
 os.environ.setdefault("VERCEL", "1")
 
 try:
-    from api.main import app  # noqa: F401
+    from api.main import app
+    from fastapi import Request
+    from fastapi.responses import JSONResponse
+
+    @app.middleware("http")
+    async def vercel_path_correction(request: Request, call_next):
+        """
+        Vercel's rewrite engine forwards /{path} to /api/index.py.
+        In some environments, the ASGI scope['path'] is set to '/api/index.py'
+        or '/api/index' while the real requested path is in the 'x-matched-path'
+        or 'x-forwarded-uri' header.
+        This middleware restores the original path in scope so FastAPI routes match.
+        """
+        matched = request.headers.get("x-matched-path") or request.headers.get("x-forwarded-uri")
+        curr_path = request.scope.get("path", "")
+        if matched and (curr_path.endswith("/index.py") or curr_path in ("/api/index.py", "/api/index", "/api", "/")):
+            request.scope["path"] = matched
+        return await call_next(request)
+
+    @app.exception_handler(404)
+    async def custom_404_handler(request: Request, exc):
+        return JSONResponse(
+            status_code=404,
+            content={
+                "detail": "Not Found",
+                "path": request.url.path,
+                "scope_path": request.scope.get("path"),
+                "matched_header": request.headers.get("x-matched-path"),
+                "forwarded_uri": request.headers.get("x-forwarded-uri"),
+            }
+        )
+
 except Exception as exc:
     # If the main app fails to import, create a minimal diagnostic app
     from fastapi import FastAPI

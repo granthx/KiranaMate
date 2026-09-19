@@ -13,6 +13,38 @@
       "destination": "/dashboard/index.html"
     },
     {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/merchant/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/campaign/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/webhook/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/report/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/trace/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/status",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/health",
+      "destination": "/api/index.py"
+    },
+    {
       "source": "/(.*)",
       "destination": "/api/index.py"
     }

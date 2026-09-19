@@ -169,12 +169,16 @@ app.add_middleware(
 
 # ── Routers ───────────────────────────────────────────────────────────────────
 
-app.include_router(merchant_router,  prefix="/merchant",  tags=["Merchant"])
-app.include_router(campaign_router,  prefix="/campaign",  tags=["Campaign"])
-app.include_router(webhook_router,   prefix="/webhook",   tags=["Webhooks"])
-app.include_router(health_router,    prefix="/report",    tags=["Health Report"])
-app.include_router(trace_router,     prefix="/api/trace", tags=["Trace"])
-app.include_router(trace_router,     prefix="/trace",     tags=["Trace"])
+app.include_router(merchant_router,  prefix="/merchant",      tags=["Merchant"])
+app.include_router(merchant_router,  prefix="/api/merchant",  tags=["Merchant"])
+app.include_router(campaign_router,  prefix="/campaign",      tags=["Campaign"])
+app.include_router(campaign_router,  prefix="/api/campaign",  tags=["Campaign"])
+app.include_router(webhook_router,   prefix="/webhook",       tags=["Webhooks"])
+app.include_router(webhook_router,   prefix="/api/webhook",   tags=["Webhooks"])
+app.include_router(health_router,    prefix="/report",        tags=["Health Report"])
+app.include_router(health_router,    prefix="/api/report",    tags=["Health Report"])
+app.include_router(trace_router,     prefix="/api/trace",     tags=["Trace"])
+app.include_router(trace_router,     prefix="/trace",         tags=["Trace"])
 
 # ── Serve Hackathon Demo Dashboard & Reports ───────────────────────────────────
 import os as _os
@@ -208,6 +212,7 @@ async def root():
 
 
 @app.get("/status", tags=["Root"])
+@app.get("/api/status", tags=["Root"])
 async def status_info():
     return {
         "product":    "KiranaMate — MerchantMind AI",
@@ -221,6 +226,7 @@ async def status_info():
 
 
 @app.get("/health", tags=["Root"])
+@app.get("/api/health", tags=["Root"])
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow().isoformat()}
 
