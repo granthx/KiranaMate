@@ -17,88 +17,6 @@
 
 ---
 
-## 🗂️ Project Structure
-
-```
-kiranamate/
-├── agents/                     # LangGraph StateGraph Autonomous Agents
-│   ├── sales_monitor.py        # Hourly Sales Deviation & Trend Tracker
-│   ├── campaign_executor.py    # 6-Step Autonomous Campaign Swarm
-│   └── weekly_report.py        # ReportLab PDF Generation & WhatsApp Delivery
-├── api/                        # FastAPI Webhook & Dashboard Endpoints
-│   ├── main.py                 # Application router, CORS & SSE bus
-│   ├── routes_merchant.py      # /merchant telemetry & metrics endpoints
-│   ├── routes_campaign.py      # /campaign/text & approval endpoints
-│   ├── routes_webhook.py       # WhatsApp Cloud API & Paytm webhooks
-│   └── routes_health.py        # Health & system diagnostics
-├── core/                       # Integrations & Core Infrastructure
-│   ├── cognee_client.py        # Knowledge graph memory store
-│   ├── serper_client.py        # Serper AI live competitor price scraping
-│   ├── whatsapp_client.py      # Meta WhatsApp Cloud API client
-│   ├── paytm_client.py         # Paytm Business & Soundbox event parser
-│   ├── sarvam_client.py        # Sarvam AI vernacular speech-to-text
-│   ├── trace_bus.py            # Real-time SSE trace event bus
-│   └── tunnel_manager.py       # Localtunnel / ngrok webhook tunnel
-├── dashboard/                  # Human-Crafted Airbnb Design System Frontend
-│   ├── index.html              # Clean, semantic merchant interface
-│   ├── style.css               # Airbnb Cereal tokens, pure white canvas
-│   └── app.js                  # SSE stream listener & real-time telemetry
-├── db/                         # Persistence Layer
-│   ├── database.py             # SQLAlchemy async engine & session
-│   ├── models.py               # Merchant, Transaction, Campaign & Khata models
-│   └── seed.py                 # Realistic Kirana store demo seed script
-└── utils/                      # Deterministic Mathematical Engines
-    ├── anomaly_detector.py     # 4-week rolling baseline statistical engine
-    └── discount_calculator.py  # Cost floor & margin-safe discount calculus
-```
-
----
-
-> **"Like a GPS for your business — always watching, always guiding, never needing to be asked."**  
-> *Zero-app adoption friction, vernacular voice-first interaction, proactive multi-agent intelligence, and 100% margin-guaranteed execution.*
-
----
-
-## 📑 Table of Contents
-
-1. [Executive Summary](#1-executive-summary)
-2. [The Exact Problem & Quality of the Problem](#2-the-exact-problem--quality-of-the-problem)
-   - [The Quick-Commerce Assault](#21-the-quick-commerce-assault)
-   - [The SaaS & ERP Adoption Paradox](#22-the-saas--erp-adoption-paradox)
-   - [The Triple Silent Margin Bleed](#23-the-triple-silent-margin-bleed)
-3. [Relevance & Philosophy of the Technical Solution](#3-relevance--philosophy-of-the-technical-solution)
-   - [Why WhatsApp Native?](#31-why-whatsapp-native)
-   - [Why Sarvam AI Vernacular Voice (`saaras:v3`)?](#32-why-sarvam-ai-vernacular-voice-saarasv3)
-   - [Why Event-Driven Passive Ingestion (Paytm Soundbox)?](#33-why-event-driven-passive-ingestion-paytm-soundbox)
-   - [Why LangGraph Stateful Orchestration?](#34-why-langgraph-stateful-orchestration)
-   - [Why Knowledge Graph Memory (Cognee) over Flat SQL?](#35-why-knowledge-graph-memory-cognee-over-flat-sql)
-   - [Why Real-Time Competitor Scraping (Serper AI)?](#36-why-real-time-competitor-scraping-serper-ai)
-4. [Complete Technical Architecture](#4-complete-technical-architecture)
-   - [High-Level Architectural Blueprint](#41-high-level-architectural-blueprint)
-   - [End-to-End Ingestion, Reasoning & Delivery Pipeline](#42-end-to-end-ingestion-reasoning--delivery-pipeline)
-   - [Data & State Management](#43-data--state-management)
-5. [Autonomous AI Agents & Multi-Agent Workflows](#5-autonomous-ai-agents--multi-agent-workflows)
-   - [Agent 1: Autonomous Sales Anomaly Monitor (`sales_monitor.py`)](#51-agent-1-autonomous-sales-anomaly-monitor)
-   - [Agent 2: LangGraph Campaign Executor (`campaign_executor.py`)](#52-agent-2-langgraph-campaign-executor)
-   - [Agent 3: Weekly Business Health Doctor (`weekly_report.py`)](#53-agent-3-weekly-business-health-doctor)
-   - [Agent 4: Khata Credit Recovery Engine (`khata_recovery.py`)](#54-agent-4-khata-credit-recovery-engine)
-6. [Mathematical Foundations & Algorithmic Formulations](#6-mathematical-foundations--algorithmic-formulations)
-   - [Statistical Anomaly Detection (EWMA + Z-Score)](#61-statistical-anomaly-detection-ewma--z-score)
-   - [Margin-Safe Dynamic Pricing Engine](#62-margin-safe-dynamic-pricing-engine)
-   - [4-Pillar Composite Business Health Diagnostic (0–100 Scale)](#63-4-pillar-composite-business-health-diagnostic-0100-scale)
-7. [System Workflows & Sequence Diagrams](#7-system-workflows--sequence-diagrams)
-   - [Workflow A: Voice-to-Clearance Campaign (< 90s)](#71-workflow-a-voice-to-clearance-campaign--90s)
-   - [Workflow B: Autonomous Sales Anomaly to Khata Escalation](#72-workflow-b-autonomous-sales-anomaly-to-khata-escalation)
-8. [Innovation & Competitive Differentiation](#8-innovation--competitive-differentiation)
-   - [Comparative Matrix](#81-comparative-matrix)
-   - [Core Innovations](#82-core-innovations)
-9. [Technology Stack Defense](#9-technology-stack-defense)
-10. [Repository Directory & Component Index](#10-repository-directory--component-index)
-11. [Installation & Deployment Guide](#11-installation--deployment-guide)
-12. [API Reference & Webhook Contract](#12-api-reference--webhook-contract)
-13. [Anticipated Questions & Technical Defense](#13-anticipated-questions--technical-defense)
-
----
 
 ## 1. Executive Summary
 
@@ -190,10 +108,46 @@ Customer-store relationships in Indian Kiranas are deeply relational and non-lin
 Static price databases become stale within hours in the fast-moving Q-Commerce landscape. By utilizing **Serper AI**, KiranaMate performs live Google and quick-commerce searches matching product title, weight, and merchant city/pincode to obtain ground-truth Blinkit, Zepto, and Instamart prices.
 
 ---
+## 4. Project Structure
 
-## 4. Complete Technical Architecture
+```
+kiranamate/
+├── agents/                     # LangGraph StateGraph Autonomous Agents
+│   ├── sales_monitor.py        # Hourly Sales Deviation & Trend Tracker
+│   ├── campaign_executor.py    # 6-Step Autonomous Campaign Swarm
+│   └── weekly_report.py        # ReportLab PDF Generation & WhatsApp Delivery
+├── api/                        # FastAPI Webhook & Dashboard Endpoints
+│   ├── main.py                 # Application router, CORS & SSE bus
+│   ├── routes_merchant.py      # /merchant telemetry & metrics endpoints
+│   ├── routes_campaign.py      # /campaign/text & approval endpoints
+│   ├── routes_webhook.py       # WhatsApp Cloud API & Paytm webhooks
+│   └── routes_health.py        # Health & system diagnostics
+├── core/                       # Integrations & Core Infrastructure
+│   ├── cognee_client.py        # Knowledge graph memory store
+│   ├── serper_client.py        # Serper AI live competitor price scraping
+│   ├── whatsapp_client.py      # Meta WhatsApp Cloud API client
+│   ├── paytm_client.py         # Paytm Business & Soundbox event parser
+│   ├── sarvam_client.py        # Sarvam AI vernacular speech-to-text
+│   ├── trace_bus.py            # Real-time SSE trace event bus
+│   └── tunnel_manager.py       # Localtunnel / ngrok webhook tunnel
+├── dashboard/                  # Human-Crafted Airbnb Design System Frontend
+│   ├── index.html              # Clean, semantic merchant interface
+│   ├── style.css               # Airbnb Cereal tokens, pure white canvas
+│   └── app.js                  # SSE stream listener & real-time telemetry
+├── db/                         # Persistence Layer
+│   ├── database.py             # SQLAlchemy async engine & session
+│   ├── models.py               # Merchant, Transaction, Campaign & Khata models
+│   └── seed.py                 # Realistic Kirana store demo seed script
+└── utils/                      # Deterministic Mathematical Engines
+    ├── anomaly_detector.py     # 4-week rolling baseline statistical engine
+    └── discount_calculator.py  # Cost floor & margin-safe discount calculus
+```
 
-### 4.1 High-Level Architectural Blueprint
+---
+
+## 5. Complete Technical Architecture
+
+### 5.1 High-Level Architectural Blueprint
 
 ```mermaid
 graph TD
@@ -288,7 +242,7 @@ graph TD
     SSE --> DASH
 ```
 
-### 4.2 End-to-End Ingestion, Reasoning & Delivery Pipeline
+### 5.2 End-to-End Ingestion, Reasoning & Delivery Pipeline
 
 The operational pipeline flows through six distinct phases:
 
@@ -328,7 +282,7 @@ The operational pipeline flows through six distinct phases:
 
 ---
 
-## 5. Autonomous AI Agents & Multi-Agent Workflows
+## 6. Autonomous AI Agents & Multi-Agent Workflows
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -343,7 +297,7 @@ The operational pipeline flows through six distinct phases:
 └──────────────────────┴──────────────────────┴───────────────────────────────────┘
 ```
 
-### 5.1 Agent 1: Autonomous Sales Anomaly Monitor
+### 6.1 Agent 1: Autonomous Sales Anomaly Monitor
 *Implemented in `agents/sales_monitor.py` & `utils/anomaly_detector.py`*
 
 Operating as a continuous background daemon, this agent monitors store velocity without requiring any human prompts:
@@ -357,7 +311,7 @@ Operating as a continuous background daemon, this agent monitors store velocity 
   > *"🚨 Alert Ramesh ji! Dairy sales are down 41% compared to your usual Friday. 14 milk packets risk expiring. Should I launch a clearance campaign?"*  
   > Buttons: `[✅ Run Campaign]` | `[📊 Details]` | `[❌ Ignore]`
 
-### 5.2 Agent 2: LangGraph Campaign Executor
+### 6.2 Agent 2: LangGraph Campaign Executor
 *Implemented in `agents/campaign_executor.py`*
 
 Constructed using a deterministic 7-node **LangGraph StateGraph**:
@@ -390,7 +344,7 @@ stateDiagram-v2
 - **Node 6 (`CampaignExecutor`):** Iterates over recipient customers, injecting unique customer names and payment links into approved copy, and fires Meta WhatsApp API requests.
 - **Node 7 (`OutcomeSummary`):** Aggregates dispatch counts, expected revenue recovery, and margin saved; updates Cognee graph memory.
 
-### 5.3 Agent 3: Weekly Business Health Doctor
+### 6.3 Agent 3: Weekly Business Health Doctor
 *Implemented in `agents/weekly_report.py`*
 
 Every Sunday at 7:00 PM IST (or on-demand when the merchant asks *"Report bhejo"*):
@@ -403,7 +357,7 @@ Every Sunday at 7:00 PM IST (or on-demand when the merchant asks *"Report bhejo"
 - Dynamically compiles a multi-page, publication-quality **Vector PDF Report** using `ReportLab`.
 - Sends the PDF document natively into the merchant's WhatsApp chat accompanied by a 2-sentence conversational voice summary.
 
-### 5.4 Agent 4: Khata Credit Recovery Engine
+### 6.4 Agent 4: Khata Credit Recovery Engine
 *Implemented in `agents/khata_recovery.py`*
 
 Recovers trapped working capital without alienating community relationships:
@@ -413,9 +367,9 @@ Recovers trapped working capital without alienating community relationships:
 
 ---
 
-## 6. Mathematical Foundations & Algorithmic Formulations
+## 7. Mathematical Foundations & Algorithmic Formulations
 
-### 6.1 Statistical Anomaly Detection (EWMA + Z-Score)
+### 7.1 Statistical Anomaly Detection (EWMA + Z-Score)
 
 To prevent false alarms caused by natural daily retail fluctuations (e.g., quiet Tuesday afternoons vs. busy Sunday mornings), KiranaMate uses an **Exponentially Weighted Moving Average (EWMA)** combined with dynamic day-of-week standard deviations.
 
@@ -439,7 +393,7 @@ $$\Delta_{pct} \le -30.0\% \quad \text{AND} \quad Z_c \le -1.96 \quad (p < 0.05)
 
 ---
 
-### 6.2 Margin-Safe Dynamic Pricing Engine
+### 7.2 Margin-Safe Dynamic Pricing Engine
 
 Kirana clearance discounts must clear inventory rapidly without ever selling below cost. The algorithm establishes an **absolute cost floor** and benchmarks against real-time competitor prices:
 
@@ -465,7 +419,7 @@ Kirana clearance discounts must clear inventory rapidly without ever selling bel
 
 ---
 
-### 6.3 4-Pillar Composite Business Health Diagnostic (0–100 Scale)
+### 7.3 4-Pillar Composite Business Health Diagnostic (0–100 Scale)
 
 The weekly health diagnostic evaluates store vitality across four equal pillars, generating an integer score $S_{total} \in [0, 100]$:
 
@@ -482,9 +436,9 @@ Each pillar is scored out of 25 points:
 
 ---
 
-## 7. System Workflows & Sequence Diagrams
+## 8. System Workflows & Sequence Diagrams
 
-### 7.1 Workflow A: Voice-to-Clearance Campaign (< 90s)
+### 8.1 Workflow A: Voice-to-Clearance Campaign (< 90s)
 
 ```mermaid
 sequenceDiagram
@@ -528,7 +482,7 @@ sequenceDiagram
     Customer->>Merchant: Purchases & pays via Paytm UPI QR
 ```
 
-### 7.2 Workflow B: Autonomous Sales Anomaly to Khata Escalation
+### 8.2 Workflow B: Autonomous Sales Anomaly to Khata Escalation
 
 ```mermaid
 sequenceDiagram
@@ -558,9 +512,9 @@ sequenceDiagram
 
 ---
 
-## 8. Innovation & Competitive Differentiation
+## 9. Innovation & Competitive Differentiation
 
-### 8.1 Comparative Matrix
+### 9.1 Comparative Matrix
 
 | Capability / Dimension | Traditional POS / Billing Apps (Vyapar, Tally) | Digital Khata Apps (Khatabook, OkCredit) | Generic AI Chatbot Wrappers (GPT-4 on WhatsApp) | **KiranaMate (MerchantMind AI)** |
 | :--- | :--- | :--- | :--- | :--- |
@@ -572,7 +526,7 @@ sequenceDiagram
 | **Margin Safety Guardrails**| None | None | None (LLM hallucinated discounts) | **Mathematical margin floor ($Cost \times 1.05$) guarantee** |
 | **Customer Memory Model** | Flat customer table | Flat credit balance | Ephemeral LLM context window | **Cognee Semantic Graph of affinities & payment habits** |
 
-### 8.2 Core Innovations
+### 9.2 Core Innovations
 
 1. **Ambient Commerce Intelligence:**  
    KiranaMate does not wait for user input. It listens to soundbox audio/webhooks and background time-series streams, converting passive payment receipts into proactive commercial interventions.
@@ -585,7 +539,7 @@ sequenceDiagram
 
 ---
 
-## 9. Technology Stack Defense
+## 10. Technology Stack Defense
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────────────┐
@@ -608,7 +562,7 @@ sequenceDiagram
 
 ---
 
-## 10. Repository Directory & Component Index
+## 11. Repository Directory & Component Index
 
 ```
 kiranamate/
@@ -656,43 +610,11 @@ kiranamate/
 ├── requirements.txt                # Pinned production Python dependencies
 ├── Dockerfile                      # Production container image configuration
 └── docker-compose.yml              # App + PostgreSQL + Redis full stack definition
->>>>>>> origin/main
 ```
 
 ---
 
-<<<<<<< HEAD
-## Quick Start
-
-### 1. Clone & Setup Environment
-
-```bash
-git clone <repo>
-cd kiranamate
-cp .env.example .env
-# Fill in your API keys in .env
-```
-
-### 2. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Start with Docker (Recommended)
-
-```bash
-docker-compose up --build
-```
-
-This starts:
-- **FastAPI backend** on `http://localhost:8000`
-- **PostgreSQL** on port 5432
-- **Redis** on port 6379 (for LangGraph state persistence)
-
-### 4. Seed Demo Data
-=======
-## 11. Installation & Deployment Guide
+## 12. Installation & Deployment Guide
 
 ### Prerequisites
 - Python 3.11+
@@ -741,8 +663,10 @@ REDIS_URL=redis://localhost:6379/0
 
 ```bash
 python -m venv venv
+
 # On Windows:
 .\venv\Scripts\activate
+
 # On Linux/macOS:
 source venv/bin/activate
 
@@ -751,79 +675,12 @@ pip install -r requirements.txt
 ```
 
 ### Step 3: Seed Realistic Demo Data
->>>>>>> origin/main
 
 ```bash
 python db/seed.py
 ```
-<<<<<<< HEAD
 
-### 5. Run the API
-
-```bash
-uvicorn api.main:app --reload --port 8000
-```
-
-### 6. API Docs
-
-Visit `http://localhost:8000/docs` for the full Swagger UI.
-
----
-
-## Environment Variables (`.env`)
-
-```env
-# LLM
-GEMINI_API_KEY=your_gemini_key          # Primary LLM (JSON & Reasoning)
-OPENAI_API_KEY=your_openai_key          # Fallback + Whisper + DALL-E
-
-# Voice
-SARVAM_API_KEY=your_sarvam_key          # Vernacular voice transcription
-
-# Memory
-COGNEE_API_KEY=your_cognee_key          # Knowledge graph
-
-# Web Intelligence
-SERPER_API_KEY=your_serper_key          # Competitor pricing scrape
-
-# Messaging
-WHATSAPP_TOKEN=your_meta_token          # Meta WhatsApp Business API
-WHATSAPP_PHONE_ID=your_phone_id
-
-# Payments
-PAYTM_MERCHANT_KEY=your_paytm_key
-PAYTM_MERCHANT_ID=your_merchant_id
-
-# Database
-DATABASE_URL=postgresql://user:pass@localhost:5432/kiranamate
-
-# Redis (LangGraph state)
-REDIS_URL=redis://localhost:6379
-
-# Image Generation
-STABILITY_API_KEY=your_stability_key   # Stable Diffusion 3.5
-```
-
----
-
-## Three Demo Scenarios
-
-| Scenario | Trigger | What Happens |
-|---|---|---|
-| **Voice Clearance** | POST /campaign/voice | 5s voice → full WhatsApp campaign in 90s |
-| **Anomaly Alert** | Cron / POST /monitor/check | 41% dairy drop → auto WhatsApp alert + khata recovery |
-| **Sunday Report** | Cron (Sun 7PM) / POST /report/generate | 0-100 health score PDF via WhatsApp |
-
----
-
-## N8N Setup
-
-1. Open N8N (`http://localhost:5678` if using docker-compose)
-2. Import `n8n_workflows/workflows.json`
-3. Set credentials for WhatsApp, Paytm, and the FastAPI webhook URL
-4. Activate all 3 workflows
-=======
-*Populates the database with 50+ realistic Kirana products (Amul Milk, Britannia Bread, Aashirvaad Atta, Maggi Noodles), 14 days of simulated Paytm transactions, customer profiles, and open khata debt.*
+This populates the database with 50+ realistic Kirana products (Amul Milk, Britannia Bread, Aashirvaad Atta, Maggi Noodles), 14 days of simulated Paytm transactions, customer profiles, and open khata debt.
 
 ### Step 4: Run the Backend Service
 
@@ -839,11 +696,61 @@ uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 ```bash
 docker-compose up --build -d
 ```
-Spins up FastAPI, PostgreSQL 16, and Redis with persistent volumes and automated health checks.
+
+This starts FastAPI, PostgreSQL, and Redis with persistent volumes and automated health checks.
+
+### Environment Variables (`.env`)
+
+```env
+# LLM
+GEMINI_API_KEY=your_gemini_key
+OPENAI_API_KEY=your_openai_key
+
+# Voice
+SARVAM_API_KEY=your_sarvam_key
+
+# Memory
+COGNEE_API_KEY=your_cognee_key
+
+# Web Intelligence
+SERPER_API_KEY=your_serper_key
+
+# Messaging
+WHATSAPP_TOKEN=your_meta_token
+WHATSAPP_PHONE_ID=your_phone_id
+
+# Payments
+PAYTM_MERCHANT_KEY=your_paytm_key
+PAYTM_MERCHANT_ID=your_merchant_id
+
+# Database
+DATABASE_URL=postgresql://user:pass@localhost:5432/kiranamate
+
+# Redis (LangGraph state)
+REDIS_URL=redis://localhost:6379
+
+# Image Generation
+STABILITY_API_KEY=your_stability_key
+```
+
+### Demo Scenarios
+
+| Scenario | Trigger | What Happens |
+|---|---|---|
+| **Voice Clearance** | `POST /campaign/voice` | 5s voice → full WhatsApp campaign in 90s |
+| **Anomaly Alert** | Cron / `POST /monitor/check` | 41% dairy drop → auto WhatsApp alert + khata recovery |
+| **Sunday Report** | Cron (Sun 7PM) / `POST /report/generate` | 0–100 health score PDF via WhatsApp |
+
+### N8N Setup
+
+1. Open N8N (`http://localhost:5678` if using docker-compose).
+2. Import `n8n_workflows/workflows.json`.
+3. Set credentials for WhatsApp, Paytm, and the FastAPI webhook URL.
+4. Activate all 3 workflows.
 
 ---
 
-## 12. API Reference & Webhook Contract
+## 13. API Reference & Webhook Contract
 
 ### Webhook Endpoints (`api/routes_webhook.py`)
 
@@ -885,7 +792,7 @@ Spins up FastAPI, PostgreSQL 16, and Redis with persistent volumes and automated
 
 ---
 
-## 13. Anticipated Questions & Technical Defense
+## 14. Anticipated Questions & Technical Defense
 
 #### Q1: "Why not simply build a lightweight mobile app instead of relying on WhatsApp?"
 > **Defense:** Indian Kirana owners work 14–16 hours daily. Industry data reveals that standalone Kirana apps suffer from 80%+ 90-day churn. WhatsApp is already opened 50+ times a day by merchants; building on Meta WhatsApp Cloud API guarantees **100% interface adoption with zero learning curve**.
@@ -901,7 +808,7 @@ Spins up FastAPI, PostgreSQL 16, and Redis with persistent volumes and automated
 
 ---
 
-## 👥 Contributors & Hackathon Team
+## 15. Contributors & Hackathon Team
 
 - **KiranaMate Engineering Team** — Built with passion for empowering India's local retail heroes.
 - **License:** MIT Open Source — Free to adapt, build upon, and scale.
