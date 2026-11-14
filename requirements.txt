@@ -53,6 +53,10 @@ passlib==1.7.4
 celery==5.4.0
 flower==2.0.1           # Celery monitoring
 
-# Data
+# Data & Computer Vision (KiranaVision CNN + OpenCV)
 pandas==2.2.2
 numpy==1.26.4
+opencv-python-headless>=4.9.0
+Pillow>=10.3.0
+torch>=2.2.0
+torchvision>=0.17.0
