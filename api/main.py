@@ -49,6 +49,7 @@ from api.routes_campaign  import router as campaign_router
 from api.routes_webhook   import router as webhook_router
 from api.routes_health    import router as health_router
 from api.routes_trace     import router as trace_router
+from api.routes_vision    import router as vision_router
 
 load_dotenv()
 
@@ -216,6 +217,7 @@ app.include_router(health_router,    prefix="/report",        tags=["Health Repo
 app.include_router(health_router,    prefix="/api/report",    tags=["Health Report"])
 app.include_router(trace_router,     prefix="/api/trace",     tags=["Trace"])
 app.include_router(trace_router,     prefix="/trace",         tags=["Trace"])
+app.include_router(vision_router,    prefix="/api/vision",    tags=["KiranaVision CNN"])
 
 # ── Serve Hackathon Demo Dashboard & Reports ───────────────────────────────────
 import os as _os
@@ -225,6 +227,11 @@ _dashboard_dir = _os.path.join(_os.path.dirname(_os.path.dirname(__file__)), "da
 if _os.path.isdir(_dashboard_dir):
     app.mount("/dashboard", StaticFiles(directory=_dashboard_dir, html=True), name="dashboard")
     print(f"Dashboard mounted at /dashboard ({_dashboard_dir})")
+
+_vision_dir = _os.path.join(_os.path.dirname(_os.path.dirname(__file__)), "vision", "ui")
+if _os.path.isdir(_vision_dir):
+    app.mount("/vision", StaticFiles(directory=_vision_dir, html=True), name="vision")
+    print(f"KiranaVision UI mounted at /vision ({_vision_dir})")
 
 is_serverless_runtime = bool(_os.getenv("VERCEL") or _os.getenv("AWS_LAMBDA_FUNCTION_NAME"))
 if is_serverless_runtime:

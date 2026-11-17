@@ -9,6 +9,14 @@
       "destination": "/dashboard/index.html"
     },
     {
+      "source": "/vision/(.*)",
+      "destination": "/vision/ui/$1"
+    },
+    {
+      "source": "/vision",
+      "destination": "/vision/ui/index.html"
+    },
+    {
       "source": "/",
       "destination": "/dashboard/index.html"
     },
