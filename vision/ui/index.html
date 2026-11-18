@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KiranaVision — CNN &amp; OpenCV Countertop Weighing Scale Recognition</title>
+    <meta name="description" content="KiranaVision: Overhead Weighing Machine & Countertop CNN + OpenCV product recognition and live inventory tracking for KiranaMate.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=kiranavision-v1">
+</head>
+<body>
+
+    <!-- ── Top Navigation Bar (Unified with Agent Book) ────────────── -->
+    <header class="app-nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="/vision/" class="brand-link" title="KiranaVision CNN Scanner">
+                    <div class="brand-logo-mark">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-title">KiranaVision</span>
+                        <span class="brand-sub">CNN + OpenCV Scale Sensor</span>
+                    </div>
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <div class="store-selector-pill">
+                    <span class="store-dot"></span>
+                    <div class="store-info">
+                        <span class="store-name">Sharma Kirana Store</span>
+                        <span class="store-meta">Overhead Weighing Scale Cam #01 &bull; 12 SKUs</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Site Switcher -->
+            <nav class="nav-center-tabs">
+                <a href="/dashboard/" class="nav-tab" title="Switch to Agent Book Command Center">
+                    <span class="tab-label">Agent Book (Command Center)</span>
+                </a>
+                <a href="/vision/" class="nav-tab active">
+                    <span class="tab-label">KiranaVision (CNN Scale)</span>
+                    <span class="tab-badge">CNN + OpenCV</span>
+                </a>
+            </nav>
+
+            <!-- Right Controls -->
+            <div class="nav-right">
+                <div class="api-status" id="cnn-status-pill">
+                    <span class="status-dot"></span>
+                    <span class="status-text" id="cnn-status-text">PyTorch CNN Ready</span>
+                </div>
+                <button class="nav-pill-button" id="btn-retrain-cnn" type="button" title="Re-train PyTorch KiranaPacketCNN weights">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                    <span>Train CNN</span>
+                </button>
+                <a href="/docs" target="_blank" class="nav-pill-button secondary">
+                    <span>API Docs</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Countertop Mode & Input Source Control Strip ────────────── -->
+    <section class="control-strip-section">
+        <div class="control-strip">
+            <!-- Input Source Selector -->
+            <div class="source-tabs" role="tablist">
+                <button class="source-tab active" data-source="simulator" id="tab-simulator" type="button">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                        <path d="M6 12h12"></path>
+                    </svg>
+                    <span>1. Virtual Weighing Scale Bench</span>
+                </button>
+                <button class="source-tab" data-source="webcam" id="tab-webcam" type="button">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                    </svg>
+                    <span>2. Live Overhead Webcam</span>
+                </button>
+                <button class="source-tab" data-source="upload" id="tab-upload" type="button">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    <span>3. Upload Packet Photo</span>
+                </button>
+            </div>
+
+            <!-- Inventory Flow Direction: Checkout (-OUT) vs Restock (+IN) -->
+            <div class="flow-mode-toggle">
+                <span class="toggle-kicker">INVENTORY ACTION:</span>
+                <button class="flow-btn active" data-mode="checkout" id="mode-checkout" type="button">
+                    <span class="flow-dot out"></span>
+                    <span>Counter Sale (STOCK OUT)</span>
+                </button>
+                <button class="flow-btn" data-mode="restock" id="mode-restock" type="button">
+                    <span class="flow-dot in"></span>
+                    <span>Supplier Delivery (STOCK IN)</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Main 3-Column Vision Workspace ──────────────────────────── -->
+    <main class="vision-workspace">
+
+        <!-- COLUMN 1 (LEFT): Kirana Product Tray (8 Hero Packets + 4 Store SKUs) -->
+        <aside class="tray-column">
+            <div class="card tray-card">
+                <div class="card-header-compact">
+                    <div>
+                        <span class="section-kicker">Kirana Countertop Catalog</span>
+                        <h2 class="card-title">Tap Packet to Place on Scale</h2>
+                    </div>
+                    <button class="text-btn" id="btn-clear-scale" type="button">Clear Scale</button>
+                </div>
+
+                <p class="tray-helper">
+                    Click any packet below to place it under the overhead camera on the weighing machine, or use it as target SKU when enrolling a real packet via webcam.
+                </p>
+
+                <div class="tray-section-label">
+                    <span>Hero Countertop Packets (8 Core Items)</span>
+                    <span class="count-pill">CNN Primary</span>
+                </div>
+                <div class="product-tray-grid" id="hero-tray-grid">
+                    <!-- Populated dynamically by app.js -->
+                </div>
+
+                <div class="tray-section-label" style="margin-top: 14px;">
+                    <span>Additional Store Inventory (4 Items)</span>
+                    <span class="count-pill muted">Full Catalog</span>
+                </div>
+                <div class="product-tray-grid compact" id="extra-tray-grid">
+                    <!-- Populated dynamically by app.js -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- COLUMN 2 (CENTER): Overhead Camera Viewport + Digital Weighing Machine -->
+        <section class="camera-column">
+            <div class="card camera-card">
+                <div class="camera-top-bar">
+                    <div class="cam-title-group">
+                        <span class="cam-live-badge" id="cam-mode-badge">
+                            <span class="pulse-dot"></span> OVERHEAD SCALE ROI
+                        </span>
+                        <h3 class="cam-heading" id="cam-heading-text">Top-Down Weighing Machine Camera Feed</h3>
+                    </div>
+                    <div class="cam-telemetry-pills">
+                        <span class="telemetry-chip" id="chip-latency">CNN: — ms</span>
+                        <span class="telemetry-chip" id="chip-objects">0 Packets</span>
+                    </div>
+                </div>
+
+                <!-- Viewport Container -->
+                <div class="viewport-wrapper">
+                    <!-- Hidden raw webcam video & composite offscreen canvas -->
+                    <video id="webcam-video" autoplay playsinline muted style="display: none;"></video>
+                    <canvas id="scene-canvas" width="640" height="440" style="display: none;"></canvas>
+
+                    <!-- Visible HUD Display (Shows OpenCV Annotated Frame or Live Video) -->
+                    <div class="hud-stage" id="hud-stage">
+                        <img id="annotated-output" class="annotated-image" alt="OpenCV + CNN Annotated Countertop View" />
+                        <div class="hud-empty-overlay" id="hud-empty-overlay" style="display: none;">
+                            <div class="empty-box">
+                                <span>Place a packet from the left tray onto the weighing scale or start your webcam</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Webcam Live Controls Bar (Shown in Webcam Mode) -->
+                    <div class="webcam-toolbar" id="webcam-toolbar" style="display: none;">
+                        <button class="cam-btn primary" id="btn-webcam-scan" type="button">
+                            <span>Scan Current Frame Now</span>
+                        </button>
+                        <button class="cam-btn" id="btn-webcam-auto" type="button">
+                            <span>Auto-Scan (Every 1.5s): OFF</span>
+                        </button>
+                        <div class="enroll-inline-group">
+                            <select id="enroll-sku-select" class="enroll-select" aria-label="Select SKU to teach"></select>
+                            <button class="cam-btn accent" id="btn-enroll-frame" type="button" title="Capture current webcam packet crop into CNN prototype memory">
+                                <span>+ Teach / Enroll Packet</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Upload Toolbar (Shown in Upload Mode) -->
+                    <div class="webcam-toolbar" id="upload-toolbar" style="display: none;">
+                        <label class="cam-btn primary" for="file-upload-input" style="cursor: pointer;">
+                            <span>Choose Packet / Counter Image...</span>
+                        </label>
+                        <input type="file" id="file-upload-input" accept="image/*" style="display: none;" />
+                        <span class="upload-hint">Supports JPG, PNG, WebP photos of Amul Milk, Maggi, Lay's, Tata Salt, etc.</span>
+                    </div>
+                </div>
+
+                <!-- Digital Weighing Machine Load-Cell Readout Bar -->
+                <div class="weighing-scale-panel">
+                    <div class="scale-lcd-box">
+                        <div class="lcd-header">
+                            <span class="lcd-label">DIGITAL WEIGHING MACHINE (HX711 LOAD CELL)</span>
+                            <span class="weight-verify-badge" id="weight-verify-badge">STANDBY</span>
+                        </div>
+                        <div class="lcd-main-row">
+                            <div class="lcd-digits" id="scale-lcd-digits">0000 <span class="unit">g</span></div>
+                            <div class="lcd-expected">
+                                <span>CNN Expected Weight:</span>
+                                <strong id="expected-weight-val">0 g</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scale-controls-box">
+                        <div class="slider-header">
+                            <label for="weight-slider">Simulate Load Cell Weight Override (g)</label>
+                            <button class="tare-btn" id="btn-tare-scale" type="button">TARE (0g)</button>
+                        </div>
+                        <input type="range" id="weight-slider" min="0" max="3000" step="5" value="0" />
+                        <div class="scale-quick-presets">
+                            <span>Quick Test:</span>
+                            <button class="preset-chip" data-preset="amul_milk_2" type="button">2x Amul Milk (1030g)</button>
+                            <button class="preset-chip" data-preset="morning_dairy" type="button">Milk + Butter + Paneer</button>
+                            <button class="preset-chip" data-preset="snack_combo" type="button">Maggi + Lay's + Coke</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Store Inventory Table (Synced with SQLite/PostgreSQL) -->
+            <div class="card inventory-card">
+                <div class="card-header-compact">
+                    <div>
+                        <span class="section-kicker">Real-Time Database Sync</span>
+                        <h3 class="card-title">Live Kirana Store Inventory Levels</h3>
+                    </div>
+                    <span class="sync-badge" id="inventory-sync-ts">Synced with Agent Book DB</span>
+                </div>
+                <div class="inventory-table-wrap">
+                    <table class="inventory-table">
+                        <thead>
+                            <tr>
+                                <th>SKU</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Unit Weight</th>
+                                <th>Price</th>
+                                <th>In Stock</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-tbody">
+                            <!-- Populated by app.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- COLUMN 3 (RIGHT): CNN Telemetry Inspector & Detected Basket Commit -->
+        <aside class="telemetry-column">
+
+            <!-- Detected Counter Basket & One-Click Commit -->
+            <div class="card basket-card">
+                <div class="card-header-compact">
+                    <div>
+                        <span class="section-kicker" id="basket-mode-kicker">COUNTER CHECKOUT (STOCK OUT)</span>
+                        <h3 class="card-title">Detected Table Basket</h3>
+                    </div>
+                    <span class="basket-total-badge" id="basket-total-inr">₹0</span>
+                </div>
+
+                <div class="basket-items-list" id="basket-items-list">
+                    <div class="empty-basket-msg">No packets currently on the weighing scale.</div>
+                </div>
+
+                <button class="commit-basket-btn" id="btn-commit-basket" type="button" disabled>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span id="commit-btn-label">Deduct from Inventory &amp; Log Sale</span>
+                </button>
+
+                <div class="commit-toast" id="commit-toast" style="display: none;"></div>
+            </div>
+
+            <!-- CNN + OpenCV Feature Layer Inspector -->
+            <div class="card inspector-card">
+                <div class="card-header-compact">
+                    <div>
+                        <span class="section-kicker">Deep Learning Telemetry</span>
+                        <h3 class="card-title">CNN &amp; OpenCV Layer Inspector</h3>
+                    </div>
+                    <span class="arch-tag">4-Stage ConvNet</span>
+                </div>
+
+                <!-- Primary ROI Crop & Top Prediction -->
+                <div class="roi-preview-row">
+                    <div class="roi-thumb-box">
+                        <img id="inspector-roi-img" alt="OpenCV Normalized ROI" />
+                        <span class="roi-caption">CLAHE ROI Crop (96×96)</span>
+                    </div>
+                    <div class="roi-top-meta">
+                        <span class="meta-kicker">PRIMARY CLASSIFICATION</span>
+                        <div class="meta-sku-title" id="insp-top-name">Awaiting Frame...</div>
+                        <div class="meta-sku-sub" id="insp-top-sku">Place packet on scale</div>
+                        <div class="meta-conf-pill" id="insp-top-conf">Confidence: —%</div>
+                    </div>
+                </div>
+
+                <!-- Top-3 Class Softmax Probability Bars -->
+                <div class="inspector-block">
+                    <span class="block-label">Top-3 CNN Class Probabilities (Softmax)</span>
+                    <div class="prob-bars-container" id="prob-bars-container">
+                        <div class="muted-small">Run detection to view class distribution</div>
+                    </div>
+                </div>
+
+                <!-- Ensemble Feature Breakdown -->
+                <div class="inspector-block">
+                    <span class="block-label">Hybrid Ensemble Feature Scores</span>
+                    <div class="feature-grid">
+                        <div class="feat-cell">
+                            <span class="feat-name">PyTorch CNN Logit</span>
+                            <strong class="feat-val" id="feat-cnn">—</strong>
+                        </div>
+                        <div class="feat-cell">
+                            <span class="feat-name">128-D Embedding Sim</span>
+                            <strong class="feat-val" id="feat-emb">—</strong>
+                        </div>
+                        <div class="feat-cell">
+                            <span class="feat-name">OpenCV Spatial HSV</span>
+                            <strong class="feat-val" id="feat-hsv">—</strong>
+                        </div>
+                        <div class="feat-cell">
+                            <span class="feat-name">Scale Load-Cell Fit</span>
+                            <strong class="feat-val" id="feat-weight">—</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

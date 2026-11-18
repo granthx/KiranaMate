@@ -599,6 +599,15 @@ class KiranateDashboard {
         this.addWAMsg(role, text);
       }
     }
+    else if (type === 'vision_commit') {
+      const modeLabel = data.mode === 'restock' ? 'STOCK IN' : 'STOCK OUT';
+      const itemsStr = (data.items || []).map(i => `${Math.abs(i.quantity_delta)}x ${i.name}`).join(', ');
+      this.addLog('success', `[KiranaVision CNN] ${modeLabel}: ${itemsStr} (₹${data.total_amount || 0})`);
+      this.fetchDashboard();
+    }
+    else if (type === 'vision_enroll') {
+      this.addLog('info', `[KiranaVision CNN] Enrolled live prototype for ${data.name} (${data.sku_id})`);
+    }
   }
 
   /* ── Trace ─────────────────────────────────────────── */
@@ -814,11 +823,12 @@ class KiranateDashboard {
       targetTab.classList.add('active');
     };
 
-    // Smooth scroll on tab click
+    // Smooth scroll on tab click (only for in-page section tabs with data-target)
     tabs.forEach(tab => {
+      const targetId = tab.getAttribute('data-target');
+      if (!targetId) return;
       tab.addEventListener('click', (e) => {
         e.preventDefault();
-        const targetId = tab.getAttribute('data-target');
         const el = document.getElementById(targetId);
         if (el) {
           const headerHeight = 78;
